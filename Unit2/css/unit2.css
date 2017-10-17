@@ -1,0 +1,14 @@
+body,html{height: 100%;width: 100%;margin:0;padding:0;}
+
+.content{
+	height: 100vh;
+	width: 100vw;
+	text-align: center;
+	line-height: 100vh;
+	display: block;
+}
+#example{
+	display: inline-block;
+	vertical-align: middle;
+	box-shadow: 0 0 .1em .1em hsla(0,0%,80%,.5);
+}
