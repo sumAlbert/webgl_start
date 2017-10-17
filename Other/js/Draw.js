@@ -3,8 +3,8 @@ var canvas=document.getElementById("example");
 var gl=getWebGLContext(canvas);
 
 function main(){
-    drawContinueLine(0.0, 1.0, 1.0, 1.0);
-    // drawCircle(0.0, 1.0, 1.0, 1.0);
+    // drawContinueLine(1.0, 0.0, 0.0, 1.0);
+    // drawCircle(0.0, 1.0, 0.0, 1.0);
     // drawWidthLine(0.0, 1.0, 1.0, 1.0, 10.0);
     // 画线的测试案例
     // drawThinLine(0.0, 1.0, 1.0, 1.0);
