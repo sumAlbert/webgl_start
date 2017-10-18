@@ -13,6 +13,7 @@ $(document).ready(function () {
    initMenuControl();
     $("#initCanvas").click(function () {
        GLclear(1.0,1.0,1.0,1.0);
+       canvas.onmousedown=null;
     });
    // 画直线
     $("#drawLine").click(function () {
@@ -497,12 +498,12 @@ function drawContinueWidthLine(red,green,blue,alpha,width){
                 rectPoints.push(centerPoints[length - 3] - offsetY);
                 rectPoints.push(rectPoints[rectPoints.length-22]);
                 rectPoints.push(rectPoints[rectPoints.length-22]);
-                rectPoints.push(rectPoints[rectPoints.length-20]);
-                rectPoints.push(rectPoints[rectPoints.length-20]);
-                rectPoints.push(centerPoints[length - 4] + offsetX);
-                rectPoints.push(centerPoints[length - 3] + offsetY);
-                rectPoints.push(centerPoints[length - 4] - offsetX);
-                rectPoints.push(centerPoints[length - 3] - offsetY);
+                // rectPoints.push(rectPoints[rectPoints.length-20]);
+                // rectPoints.push(rectPoints[rectPoints.length-20]);
+                // rectPoints.push(centerPoints[length - 4] + offsetX);
+                // rectPoints.push(centerPoints[length - 3] + offsetY);
+                // rectPoints.push(centerPoints[length - 4] - offsetX);
+                // rectPoints.push(centerPoints[length - 3] - offsetY);
             }
             flag=true;
             GLinitNoClear(VSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE,FSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE);
