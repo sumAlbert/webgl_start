@@ -2,15 +2,64 @@
 var RED=0.0;
 var GREEN=0.0;
 var BLUE=0.0;
-var ALPHA=0.0;
+var ALPHA=1.0;
 //全局的尺寸大小：
-var SIZE=10.0;
+var SIZE=1.0;
 //绘制一个点用到的着色器
 var canvas=document.getElementById("example");
 var gl=getWebGLContext(canvas);
 
+$(document).ready(function () {
+   initMenuControl();
+    $("#initCanvas").click(function () {
+       GLclear(1.0,1.0,1.0,1.0);
+    });
+   // 画直线
+    $("#drawLine").click(function () {
+        if(SIZE>1.0)
+            drawWidthLine(RED,GREEN,BLUE,ALPHA,SIZE);
+        else
+            drawThinLine(RED,GREEN,BLUE,SIZE);
+    });
+    //铅笔画
+    $("#drawPen").click(function () {
+        if(SIZE>1.0)
+            drawContinueWidthLine(RED,GREEN,BLUE,ALPHA,SIZE);
+        else
+            drawContinueLine(RED,GREEN,BLUE,SIZE);
 
-function main() {
+    });
+    //画圆
+    $("#drawCircle").click(function () {
+        drawCircle(RED,GREEN,BLUE,ALPHA);
+    });
+
+    
+});
+
+//设置尺寸
+function setSizes() {
+    var val=document.getElementById("input-size").value;
+    SIZE=val+0.0;
+    GLclear(1.0, 1.0, 1.0, 1.0);
+    canvas.onmousedown=null;
+}
+
+//设置颜色
+function setColor() {
+    var rgba_str=document.getElementById("input-color").value;
+    var red=rgba_str.substring(1,3);
+    var green=rgba_str.substring(3,5);
+    var blue=rgba_str.substring(5,7);
+    RED=get16To10(red)/255.0;
+    GREEN=get16To10(green)/255.0;
+    BLUE=get16To10(blue)/255.0;
+    GLclear(1.0, 1.0, 1.0, 1.0);
+    canvas.onmousedown=null;
+}
+
+//菜单尺寸控制器
+function initMenuControl(){
     var menu_control=document.getElementsByClassName("menu-control")[0];
     var content=document.getElementsByClassName("content")[0];
     menu_control.onmousedown=function (ev) {
@@ -20,12 +69,10 @@ function main() {
             menu.style.width=x+'px';
             content.onmouseup=function (ev) {
                 content.onmousemove=null;
-            }
+            };
         };
     };
 }
-
-
 /*webgl部分*/
 //初始化WebGL的着色器
 function GLinit(vshader_source,fshader_source){
@@ -37,6 +84,16 @@ function GLinit(vshader_source,fshader_source){
         console.log("Fail to init shaders");
     }
     GLclear(1.0 ,1.0, 1.0, 1.0);
+}
+
+function GLinitNoClear(vshader_source,fshader_source){
+    if(!gl){
+        console.log("Fail to get rendering context");
+        return;
+    }
+    if(!initShaders(gl,vshader_source,fshader_source)){
+        console.log("Fail to init shaders");
+    }
 }
 
 //清空画布
@@ -63,6 +120,7 @@ function getWebGLY(ev){
 
 //逆时针旋转90°,x方向的偏移量
 function getOfferSetX(startX,startY,stopX,stopY,width) {
+    console.log(width);
     var x=(startY-stopY)/Math.sqrt((stopY-startY)*(stopY-startY)+(stopX-startX)*(stopX-startX));
     x=x*((width/2)/(canvas.width/2));
     return x;
@@ -178,7 +236,6 @@ function drawWidthLine(red,green,blue,alpha,width){
             gl.vertexAttribPointer(a_Position,2,gl.FLOAT,false,0,0);
             gl.enableVertexAttribArray(a_Position);
             gl.uniform4f(u_FragColor,red, green, blue, alpha);
-            console.log(rectPoints.length/2);
             gl.drawArrays(gl.TRIANGLES,0,rectPoints.length/2);
             canvas.onmouseup=function(ev){
                 canvas.onmousemove=null;
@@ -396,7 +453,7 @@ var FSHADER_SOURCE_CONTINUE_CIRCLE=
     '}\n';
 
 /**
- * 绘制一条粗线
+ * 绘制一条连续的粗线
  * @param red rgba中的red
  * @param green rgba中的green
  * @param blue rgba中的blue
@@ -448,7 +505,7 @@ function drawContinueWidthLine(red,green,blue,alpha,width){
                 rectPoints.push(centerPoints[length - 3] - offsetY);
             }
             flag=true;
-            GLinit(VSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE,FSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE);
+            GLinitNoClear(VSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE,FSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE);
             var vertexes=new Float32Array(rectPoints);
             var vertexBuffer=gl.createBuffer();
             if(!vertexBuffer){

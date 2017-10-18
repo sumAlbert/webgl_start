@@ -95,8 +95,23 @@ body,html{height: 100%;width: 100%;margin:0;padding:0;}
 	line-height: 4em;
 	color: hsla(0,0%,30%,1.0);
 	margin: 0 0 .05em 0;
+	position: relative;
 }
 .menu-item:hover{
 	/*color: hsla(0,0%,0%,1.0);*/
 	color: #009ff0;
+}
+#input-color{
+	width:  2em;
+	height: 2em;
+	position: absolute;
+	right: 3em;
+	top: 1.3em;
+}
+#input-size{
+	width:  4em;
+	height: 2em;
+	position: absolute;
+	right: 2em;
+	top: 1.3em;
 }
