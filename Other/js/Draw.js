@@ -3,6 +3,7 @@ var canvas=document.getElementById("example");
 var gl=getWebGLContext(canvas);
 
 function main(){
+    drawContinueWidthLine(1.0, 0.0, 0.0, 1.0,10.0);
     // drawContinueLine(1.0, 0.0, 0.0, 1.0);
     // drawCircle(0.0, 1.0, 0.0, 1.0);
     // drawWidthLine(0.0, 1.0, 1.0, 1.0, 10.0);
@@ -11,6 +12,7 @@ function main(){
     // 画点的测试案例
     // drawGLPoint(0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 1.0);
 }
+
 
 //初始化WebGL的着色器
 function GLinit(vshader_source,fshader_source){
@@ -60,6 +62,11 @@ function getOfferSetY(startX,startY,stopX,stopY,width) {
     return y;
 }
 
+//16进制转10进制
+function get16To10(num16){
+   var num10=parseInt(num16,16);
+   return num10;
+}
 
 /**
  * 绘制一个点
@@ -369,6 +376,100 @@ var VSHADER_SOURCE_CONTINUE_CIRCLE=
     'gl_Position=a_Position;\n'+
     '}\n';
 var FSHADER_SOURCE_CONTINUE_CIRCLE=
+    'precision mediump float;\n'+
+    'uniform vec4 u_FragColor;\n'+
+    'void main(){\n'+
+    'gl_FragColor=u_FragColor;\n'+
+    '}\n';
+
+/**
+ * 绘制一条粗线
+ * @param red rgba中的red
+ * @param green rgba中的green
+ * @param blue rgba中的blue
+ * @param alpha rgba中的alpha
+ * @param width 线条的宽度
+ */
+function drawContinueWidthLine(red,green,blue,alpha,width){
+    var rectPoints=[];
+    var centerPoints=[];
+    var length=0;
+    canvas.onmousedown=function (ev) {
+        var flag=false;
+        var webglStartX=getWebGLX(ev);
+        var webglStartY=getWebGLY(ev);
+        centerPoints.push(webglStartX);
+        centerPoints.push(webglStartY);
+        canvas.onmousemove=function (ev) {
+            var webglStopX=getWebGLX(ev);
+            var webglStopY=getWebGLY(ev);
+            centerPoints.push(webglStopX);
+            centerPoints.push(webglStopY);
+            length=centerPoints.length;
+            var offsetX=getOfferSetX(centerPoints[length-4],centerPoints[length-3],centerPoints[length-2],centerPoints[length-1],width);
+            var offsetY=getOfferSetY(centerPoints[length-4],centerPoints[length-3],centerPoints[length-2],centerPoints[length-1],width);
+            rectPoints.push(centerPoints[length - 4] + offsetX);
+            rectPoints.push(centerPoints[length - 3] + offsetY);
+            rectPoints.push(centerPoints[length - 4] - offsetX);
+            rectPoints.push(centerPoints[length - 3] - offsetY);
+            rectPoints.push(centerPoints[length - 2] + offsetX);
+            rectPoints.push(centerPoints[length - 1] + offsetY);
+            rectPoints.push(centerPoints[length - 2] + offsetX);
+            rectPoints.push(centerPoints[length - 1] + offsetY);
+            rectPoints.push(centerPoints[length - 4] - offsetX);
+            rectPoints.push(centerPoints[length - 3] - offsetY);
+            rectPoints.push(centerPoints[length - 2] - offsetX);
+            rectPoints.push(centerPoints[length - 1] - offsetY);
+            if(flag) {
+                rectPoints.push(centerPoints[length - 4] + offsetX);
+                rectPoints.push(centerPoints[length - 3] + offsetY);
+                rectPoints.push(centerPoints[length - 4] - offsetX);
+                rectPoints.push(centerPoints[length - 3] - offsetY);
+                rectPoints.push(rectPoints[rectPoints.length-22]);
+                rectPoints.push(rectPoints[rectPoints.length-22]);
+                rectPoints.push(rectPoints[rectPoints.length-20]);
+                rectPoints.push(rectPoints[rectPoints.length-20]);
+                rectPoints.push(centerPoints[length - 4] + offsetX);
+                rectPoints.push(centerPoints[length - 3] + offsetY);
+                rectPoints.push(centerPoints[length - 4] - offsetX);
+                rectPoints.push(centerPoints[length - 3] - offsetY);
+            }
+            flag=true;
+            GLinit(VSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE,FSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE);
+            var vertexes=new Float32Array(rectPoints);
+            var vertexBuffer=gl.createBuffer();
+            if(!vertexBuffer){
+                console.log("Failed to create the buffer object");
+                return -1;
+            }
+            gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER,vertexes,gl.STATIC_DRAW);
+            var a_Position=gl.getAttribLocation(gl.program,"a_Position");
+            var u_FragColor=gl.getUniformLocation(gl.program,"u_FragColor");
+            gl.vertexAttribPointer(a_Position,2,gl.FLOAT,false,0,0);
+            gl.enableVertexAttribArray(a_Position);
+            gl.uniform4f(u_FragColor,red, green, blue, alpha);
+            gl.drawArrays(gl.TRIANGLES,0,rectPoints.length/2);
+            canvas.onmouseup=function(ev){
+                flag=false;
+                canvas.onmousemove=null;
+                canvas.onmouseup=null;
+            };
+            canvas.onmouseout=function(ev){
+                flag=false;
+                canvas.onmousemove=null;
+                canvas.onmouseup=null;
+            }
+        }
+    }
+}
+//绘制一条细线用到的着色器
+var VSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE=
+    'attribute vec4 a_Position;\n'+
+    'void main(){\n'+
+    'gl_Position=a_Position;\n'+
+    '}\n';
+var FSHADER_SOURCE_CONTINUE_WIDTH_CIRCLE=
     'precision mediump float;\n'+
     'uniform vec4 u_FragColor;\n'+
     'void main(){\n'+
