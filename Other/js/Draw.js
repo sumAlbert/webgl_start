@@ -1,19 +1,32 @@
+//全局的颜色变量
+var RED=0.0;
+var GREEN=0.0;
+var BLUE=0.0;
+var ALPHA=0.0;
+//全局的尺寸大小：
+var SIZE=10.0;
 //绘制一个点用到的着色器
 var canvas=document.getElementById("example");
 var gl=getWebGLContext(canvas);
 
-function main(){
-    drawContinueWidthLine(1.0, 0.0, 0.0, 1.0,10.0);
-    // drawContinueLine(1.0, 0.0, 0.0, 1.0);
-    // drawCircle(0.0, 1.0, 0.0, 1.0);
-    // drawWidthLine(0.0, 1.0, 1.0, 1.0, 10.0);
-    // 画线的测试案例
-    // drawThinLine(0.0, 1.0, 1.0, 1.0);
-    // 画点的测试案例
-    // drawGLPoint(0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 1.0);
+
+function main() {
+    var menu_control=document.getElementsByClassName("menu-control")[0];
+    var content=document.getElementsByClassName("content")[0];
+    menu_control.onmousedown=function (ev) {
+        content.onmousemove=function (ev) {
+            var x=ev.clientX;
+            var menu=document.getElementsByClassName("menu")[0];
+            menu.style.width=x+'px';
+            content.onmouseup=function (ev) {
+                content.onmousemove=null;
+            }
+        };
+    };
 }
 
 
+/*webgl部分*/
 //初始化WebGL的着色器
 function GLinit(vshader_source,fshader_source){
     if(!gl){

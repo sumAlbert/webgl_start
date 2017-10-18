@@ -1,14 +1,102 @@
 body,html{height: 100%;width: 100%;margin:0;padding:0;}
 
+
 .content{
-	height: 100vh;
-	width: 100vw;
-	text-align: center;
-	line-height: 100vh;
-	display: block;
+	display: flex;
+	display: -webkit-flex;
+			 flex-direction: row;
+	-webkit-flex-direction: row;
+			 align-items: center;
+	-webkit-align-items: center;
+	height: 100%;
+	width: 100%;
+	position: relative;
+	background: url("../img/bg.jpg") no-repeat center;
+	background-size: 100% 100%;
+}
+.edit-content{
+	height: 100%;
+	flex: 1;
+	-webkit-flex: 1;
+	display: flex;
+	display: -webkit-flex;
+			 flex-direction: row;
+	-webkit-flex-direction: row;
+			 align-items: center;
+	-webkit-align-items: center;
+			 justify-content: center;
+	-webkit-justify-content: center;
+	position: relative;
 }
 #example{
+	display: block;
+	box-shadow: 0 0 .1em .1em hsla(0,0%,80%,.5);
+	background: white;
+}
+
+.menu{
+	text-align: center;
+	width: 15em;
+	height: 100%;
+	display: block;
+	position: relative;
+	background: hsla(0,0%,100%,.5);
+}
+.menu-control{
+	width: 8px;
+	height: 100%;
+	cursor: e-resize;
+	display: block;
+	position: absolute;
+	right: -4px;
+	top: 0;
+	z-index: 2;
+	-webkit-transition: all .5s;
+	-moz-transition: all .5s;
+	-ms-transition: all .5s;
+	-o-transition: all .5s;
+	transition: all .5s;
+}
+.menu-control:hover{
+	background: hsla(0,0%,20%,.8);
+}
+.menu-items{
+	width: 100%;
+	background: transparent;
+}
+.logo{
+	display: inline-block;
+	height: 2em;
+	width: 2em;
+	background: url("../img/logo.png") no-repeat center;
+	background-size: 100% 100%;
+	vertical-align: middle;
+}
+.name{
 	display: inline-block;
 	vertical-align: middle;
-	box-shadow: 0 0 .1em .1em hsla(0,0%,80%,.5);
+	color: #009ff0;
+	margin: 0 0 0 .5em;
+	font-weight: 700;
+	font-size: 130%;
+}
+.version{
+	vertical-align: baseline;
+	font-size: 50%;
+	color: #009ff0;
+	display: inline-block;
+}
+.menu-item{
+	background: hsla(0,0%,100%,.7);
+	cursor: pointer;
+	width: 100%;
+	display: inline-block;
+	height: 4em;
+	line-height: 4em;
+	color: hsla(0,0%,30%,1.0);
+	margin: 0 0 .05em 0;
+}
+.menu-item:hover{
+	/*color: hsla(0,0%,0%,1.0);*/
+	color: #009ff0;
 }
